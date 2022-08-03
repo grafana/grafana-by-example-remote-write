@@ -46,7 +46,7 @@ pip3 install python-snappy requests
 source envvars-grafana-cloud.sh
 
 # Run the example
-python3 python3 metrics-generator.py single 5 100
+python3 metrics-generator.py single 5 100
 
 ```
 Validate the metrics have be received at the Grafana Cloud Prometheus instance under the labels:
