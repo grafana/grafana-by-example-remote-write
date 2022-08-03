@@ -53,6 +53,8 @@ python3 python3 metrics-generator.py single 5 100
 Validate the metrics have be received at the Grafana Cloud Prometheus instance under the labels:
 ```
 job="test1"
+test1_http_errors_total{}
+test1_http_requests_total{}
 ```
 
 ## Reference Documents
