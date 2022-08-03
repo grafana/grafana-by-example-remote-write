@@ -1,8 +1,6 @@
 # grafana-by-example-remote-write
 Examples of remote writing telemetry data to Grafana Metics, Logs and Traces
 
-Build and run this example using:
-
 ## Remote write to Grafana Cloud Metrics endpoint
 Example Python script to demonstrate remote write to a Grafana Cloud Metrics endpoint
 
