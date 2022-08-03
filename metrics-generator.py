@@ -10,14 +10,6 @@ from time import strftime
 import time
 import json
 
-def readJsonFile(fileName):
-    j = {}
-    try:
-        j = json.load(open(fileName, "rb"))
-    except Exception as e:
-        sys.stderr.write("readJsonFile: failed: file: {} {}\n".format(fileName, e))
-    return j
-
 from remote_pb2 import (
     WriteRequest
 )

@@ -11,6 +11,7 @@ if [ $CMD == "configure" ]; then
 elif [ $CMD == "install" ]; then
   brew install protobuf
   pip3 install --upgrade protobuf
+  pip3 install python-snappy requests
 
 elif [ $CMD == "build-pb" ]; then
   # Requires protobuf: brew install protobuf
