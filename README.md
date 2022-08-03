@@ -31,14 +31,13 @@ Install the Protocol Buffer compiler, protoc using:
 ```
 # On macOS:
 brew install protobuf
+pip3 install --upgrade protobuf
+pip3 install python-snappy requests
 ```
 
 ```
 # Download the gogo.proto, remote.proto and types.proto
 ./ctl.sh configure
-
-# Install MacOs protobuf and Python protobuf
-./ctl.sh install
 
 # Build the Python protobuf libraries
 ./ctl.sh build-pb
@@ -47,7 +46,7 @@ brew install protobuf
 source envvars-grafana-cloud.sh
 
 # Run the example
-python3 python3 metrics-generator.py single 5 100
+python3 metrics-generator.py single 5 100
 
 ```
 Validate the metrics have be received at the Grafana Cloud Prometheus instance under the labels:
