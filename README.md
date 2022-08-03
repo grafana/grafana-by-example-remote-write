@@ -8,10 +8,12 @@ Uses protocol buffer messages defined from Prometheus [prompb](https://github.co
 
 ### Required environment variables
 
+Configure these from the Grafana Cloud account:
+
 File: envvars-grafana-cloud.sh
 
 ```
-export GRAFANA_METRICS_URL="https://prometheus-blocks-prod-us-central1.grafana.net/api/prom/push"
+export GRAFANA_METRICS_URL="https://prometheus-prod-10-prod-us-central-0.grafana.net/api/prom/push"
 export GRAFANA_METRICS_USERNAME="[REQUIRED]"
 export GRAFANA_METRICS_API_KEY="[REQUIRED]"
 ```
