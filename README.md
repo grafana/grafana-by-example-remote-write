@@ -30,7 +30,8 @@ export GRAFANA_METRICS_API_KEY="[REQUIRED]"
 Install the Protocol Buffer compiler, protoc using:
 ```
 # On macOS:
-brew install--upgrad protobuf
+brew install protobuf
+pip3 install --upgrade protobuf
 pip3 install python-snappy requests
 ```
 
