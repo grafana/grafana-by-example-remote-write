@@ -30,15 +30,13 @@ export GRAFANA_METRICS_API_KEY="[REQUIRED]"
 Install the Protocol Buffer compiler, protoc using:
 ```
 # On macOS:
-brew install protobuf
+brew install--upgrad protobuf
+pip3 install python-snappy requests
 ```
 
 ```
 # Download the gogo.proto, remote.proto and types.proto
 ./ctl.sh configure
-
-# Install MacOs protobuf and Python protobuf
-./ctl.sh install
 
 # Build the Python protobuf libraries
 ./ctl.sh build-pb
