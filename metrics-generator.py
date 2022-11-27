@@ -61,8 +61,9 @@ def remoteWrite(writeRequest):
         #print("URL: {}, Value: [{}]".format(remoteWriteURL, writeRequest))
         data=snappy.compress(writeRequest.SerializeToString())
         r = requests.post(remoteWriteURL, headers=headers, data=data)
-        print("Response: {} Bytes Sent {}".format(r, len(data)))
-        print(r.text)
+        if not r.ok:
+            print("Error ", r.status_code)
+            print(r.text)
     except Exception as e:
         print("Error {} {}".format(e,r))
 
@@ -90,6 +91,43 @@ if cmd == "single":
         print("{} now {} delay {} ts {}, tsMs {}".format(s, datetime.utcnow(), delayWrSec, nowdt, nowMs))
         if delayWrSec > 0:
             time.sleep(delayWrSec)
+
+elif cmd == "streams": # durationMinutes ratePerMinute nStreams
+    durationMinutes = int(sys.argv[2])if len(sys.argv) > 2 else 1
+    ratePerMinute = float(sys.argv[3])if len(sys.argv) > 3 else 1
+    nStreams = int(sys.argv[4])if len(sys.argv) > 4 else 1
+    delaySec = 60.0 / ratePerMinute
+    timeoutSec = durationMinutes * 60
+    timeoutTime = datetime.now() + timedelta(seconds=timeoutSec)
+    startTime = datetime.now()
+    samplesSent = 0
+    hostNames = ["host1", "host2", "host3", "host4"]
+    serviceNames = ["config", "input", "output", "writer"]
+    logLevels = ["info", "error", "warning", "debug"]
+    print( "delaySec: {}".format(delaySec))
+    startTime = datetime.now()
+    sendMetricTime = datetime.now() + timedelta(seconds=delaySec)
+    reportTime = datetime.now() + timedelta(seconds=60)
+    while datetime.now() < timeoutTime:
+        now = datetime.now()
+        if now > sendMetricTime:
+            sendMetricTime = now + timedelta(seconds=delaySec)
+            nowdt = datetime.utcnow()
+            wr = WriteRequest()
+            ts1 = wr.timeseries.add()
+            addLabel(ts1, "__name__", "test1_http_requests_total")
+            addLabel(ts1, "job", "test1")
+            addLabel(ts1, "host", "host1")
+            addSample(timeSeries=ts1, value=random.randrange(0,100), nowdt=nowdt)
+            remoteWrite(wr)
+            samplesSent += 1
+        if now > reportTime:
+            reportTime = now + timedelta(seconds=60)
+            runTimeSeconds = (now - startTime).seconds
+            runTimeMinutes = runTimeSeconds / 60
+            samplesPerMinute = samplesSent /  runTimeSeconds * 60.0
+            print( "{} {:.2f} {} {:.2f} {:.2f}".format(now, runTimeMinutes, samplesSent, samplesPerMinute, delaySec))
+            
 
 
 else:
