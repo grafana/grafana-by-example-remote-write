@@ -8,12 +8,17 @@ import json
 import random
 
 
-lokiWriteURL = "{0}://{1}:{2}@{3}:{4}".format("http",
-                                              os.environ["GRAFANA_LOGS_USERNAME"],
-                                              os.environ["GRAFANA_LOGS_API_KEY"],
-                                              os.environ["GRAFANA_LOGS_HOST"],
-                                              "/loki/api/v1/push")
+lokiWriteURL = "{a}://{u}:{k}@{h}:{p}{x}".format(
+                    a=os.environ["GRAFANA_LOGS_PROTOCOL"],
+                    u=os.environ["GRAFANA_LOGS_USERNAME"],
+                    k=os.environ["GRAFANA_LOGS_API_KEY"],
+                    h=os.environ["GRAFANA_LOGS_HOST"],
+                    p=os.environ["GRAFANA_LOGS_PORT"],
+                    x="/loki/api/v1/push")
 
+print(lokiWriteURL )
+
+#exit()
 
 def writeLoki(jobName, logMessageStr):
     nowNs = int(time.time() * 1000000000)
@@ -29,6 +34,7 @@ def writeLoki(jobName, logMessageStr):
     s = requests.session()
     r = s.post(lokiWriteURL, headers=headers, data=data)
     print(data)
+    print(r.ok)
     print(r.text)
     print(r.status_code)
 
@@ -40,7 +46,9 @@ def postLokiData(logMessageStr):
     r = s.post(lokiWriteURL, headers=headers, data=data)
     # print(data)
     # print(r.text)
-    print(r.status_code)
+    if not r.ok:
+        print("Error ", r.status_code)
+        print(r.text)
 
 
 cmd = sys.argv[1] if len(sys.argv) > 1 else "unknown command"
@@ -54,9 +62,9 @@ elif cmd == "test2":
         random.randrange(1, 10), random.randrange(1, 10))
     writeLoki("test2", logMessageStr)
 
-elif cmd == "streams":
+elif cmd == "streams": # durationMinutes ratePerMinute nStreams
     durationMinutes = int(sys.argv[2])if len(sys.argv) > 2 else 1
-    ratePerMinute = int(sys.argv[3])if len(sys.argv) > 3 else 1
+    ratePerMinute = float(sys.argv[3])if len(sys.argv) > 3 else 1
     nStreams = int(sys.argv[4])if len(sys.argv) > 4 else 1
     delaySec = 60.0 / ratePerMinute
     timeoutSec = durationMinutes * 60
@@ -66,6 +74,7 @@ elif cmd == "streams":
     hostNames = ["host1", "host2", "host3", "host4"]
     serviceNames = ["config", "input", "output", "writer"]
     logLevels = ["info", "error", "warning", "debug"]
+    print( "delaySec: {}".format(delaySec))
     while datetime.now() < timeoutTime:
         nowNs = int(time.time() * 1000000000)
         jobName = "streams"
@@ -81,7 +90,7 @@ elif cmd == "streams":
             streamData = {"stream": {"job": jobName, "id": streamId},
                           "values": [[str(nowNs), json.dumps(logMessage)]]}
             lokiData["streams"].append(streamData)
-        print(json.dumps(lokiData))
+        #print(json.dumps(lokiData))
         #postLokiData( json.dumps( lokiData )  )
         postLokiData(lokiData)
         if delaySec > 0:
